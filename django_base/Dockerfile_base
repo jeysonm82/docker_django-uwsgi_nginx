@@ -1,0 +1,12 @@
+FROM stackbrew/ubuntu:saucy
+RUN apt-get update
+RUN apt-get install -y build-essential git libmysqlclient-dev
+RUN apt-get install -y python python-dev python-setuptools sqlite3 nano
+RUN easy_install pip
+RUN pip install uwsgi && pip install django && pip install django-debug-toolbar && pip install django-ckeditor && pip install mysql-python
+RUN mkdir -p /home/docker/app && mkdir -p /home/docker/opt
+ADD uwsgi.ini /home/docker/uwsgi.ini
+RUN git clone {git_url} /home/docker/app
+#EXPOSE 8001
+CMD 'uwsgi --ini /home/docker/uwsgi.ini --uid www-data --gid www-data'
+#how to run: docker run -a stdin -a stdout -v /opt/docker_sites:/home/docker/opt/ -i -t jeysonmc/django_test /bin/bash
